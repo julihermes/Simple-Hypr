@@ -1,4 +1,4 @@
-#!/bin/bashI
+#!/bin/bash
 
 clear
 
@@ -77,7 +77,7 @@ main_stage=(
     swappy
     grim
     slurp
-    thunar
+    nemo
     btop
     pamixer
     pavucontrol
@@ -90,10 +90,9 @@ main_stage=(
     thunar-archive-plugin
     file-roller
     starship
+    papirus-icon-theme
     ttf-jetbrains-mono-nerd
     noto-fonts-emoji
-    lxappearance
-    xfce4-settings
     nwg-look-bin
     sddm
 )
@@ -144,17 +143,13 @@ install_software() {
     fi
 }
 
-echo "
-=================================
-=     Which Graphics Card?      =
-=================================
 
-1) Intel
-2) Nvidia
-3) AMD
-Leave blank if you dont want install any graphic card.
+read -rep $'[\e[1;33mACTION\e[0m] - Would you like to install the packages? (y,n) ' INST
 
-"
+echo $'[\e[1;33mACTION\e[0m] - Would you like to install GPU drivers? (leave blank if you dont)
+    1) Intel
+    2) Nvidia
+    3) AMD'
 
 ISINTEL=false
 ISNVIDIA=false
@@ -163,13 +158,18 @@ ISAMD=false
 read GRAPHICSCARD
 case $GRAPHICSCARD in
 1)
-    ISINTEL=true
+    ISINTEL=true;;
 2)
-    ISNVIDIA=true
+    ISNVIDIA=true;;
 3)
-    ISAMD=true
+    ISAMD=true;;
 esac
 
+    echo -en "$ISINTEL"
+    echo -en "$ISNVIDIA"
+    echo -en "$ISAMD"
+
+exit
 
 #### Check for package manager ####
 if [ ! -f /sbin/yay ]; then  
@@ -343,10 +343,8 @@ if [[ $CFG == "Y" || $CFG == "y" ]]; then
     sudo cp Extras/hyprland.desktop /usr/share/wayland-sessions/
 
     # setup the first look and feel as dark
-    xfconf-query -c xsettings -p /Net/ThemeName -s "Adwaita-dark"
-    # xfconf-query -c xsettings -p /Net/IconThemeName -s "Papirus-Dark"
     gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
-    # gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
+    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
     cp -f HyprV/backgrounds/v4-background-dark.jpg /usr/share/sddm/themes/sdt/wallpaper.jpg
 fi
 
