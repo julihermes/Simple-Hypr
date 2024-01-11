@@ -165,12 +165,6 @@ case $GRAPHICSCARD in
     ISAMD=true;;
 esac
 
-    echo -en "$ISINTEL"
-    echo -en "$ISNVIDIA"
-    echo -en "$ISAMD"
-
-exit
-
 #### Check for package manager ####
 if [ ! -f /sbin/yay ]; then  
     echo -en "$CNT - Configuering yay."
