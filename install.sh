@@ -77,7 +77,6 @@ main_stage=(
     swappy
     grim
     slurp
-    nemo
     btop
     pamixer
     pavucontrol
@@ -87,8 +86,9 @@ main_stage=(
     blueman
     network-manager-applet
     gvfs
-    thunar-archive-plugin
     file-roller
+    nemo
+    nemo-fileroller
     starship
     papirus-icon-theme
     ttf-jetbrains-mono-nerd
@@ -336,9 +336,12 @@ if [[ $CFG == "Y" || $CFG == "y" ]]; then
     # stage the .desktop file
     sudo cp Extras/hyprland.desktop /usr/share/wayland-sessions/
 
-    # setup the first look and feel as dark
+    # setup the first look and feel preferences
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
+    gsettings set org.nemo.desktop show-desktop-icons false
+    gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
     cp -f HyprV/backgrounds/v4-background-dark.jpg /usr/share/sddm/themes/sdt/wallpaper.jpg
 fi
 
