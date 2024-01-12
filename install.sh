@@ -67,7 +67,7 @@ amd_stage=(
 #the main packages
 main_stage=(
     kitty
-    mako
+    swaync
     waybar
     swww
     swaylock-effects
