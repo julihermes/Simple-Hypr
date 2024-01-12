@@ -91,6 +91,7 @@ main_stage=(
     nemo-fileroller
     starship
     papirus-icon-theme
+    ttf-ubuntu-font-family
     ttf-jetbrains-mono-nerd
     noto-fonts-emoji
     nwg-look-bin
@@ -99,6 +100,7 @@ main_stage=(
 
 #personal packages
 personal_stage=(
+    lsd
     thunderbird
 )
 
@@ -164,6 +166,13 @@ case $GRAPHICSCARD in
 3)
     ISAMD=true;;
 esac
+
+#### Update pacman ####
+echo -en "$CNT - Updating pacman."
+sudo pacman -Sy &
+show_progress $!
+echo -e "\e[1A\e[K$COK - pacman updated."
+
 
 #### Check for package manager ####
 if [ ! -f /sbin/yay ]; then  
