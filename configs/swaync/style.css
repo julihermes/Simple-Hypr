@@ -2,11 +2,13 @@
  * vim: ft=less
  */
 
-@define-color cc-bg rgba(22, 34, 66, 0.85);
+@define-color cc-bg rgba(0, 0, 0, 0.2);
 
 @define-color noti-border-color rgba(205, 214, 244, 0.8);
-@define-color noti-bg rgba(7, 40, 94, 0.85);
-@define-color noti-bg-hover rgba(7, 40, 94, 1);
+@define-color noti-bg rgba(0, 0, 0, 0.2);
+@define-color noti-bg-hover rgba(0, 0, 0, 0.4);
+
+@define-color bg-selected #1762e3;
 
 .notification-row:focus,
 .notification-row:hover {
@@ -14,15 +16,36 @@
 }
 
 .notification-default-action {
-  border-radius: 5px;
+  border-radius: 7px;
 }
 
 .control-center {
   background: @cc-bg;
-  border-radius: 5px;
+  border-radius: 7px;
   border: 2px solid @noti-border-color;
+}
+
+.notification {
+  box-shadow: none;
 }
 
 .image {
   margin: 10px;
+}
+
+.blank-window {
+  background: none;
+}
+
+.floating-notifications {
+  background: none;
+}
+
+.floating-notifications .notification {
+  background: none;
+  box-shadow: none;
+}
+
+.widget-title > button {
+  border-radius: 8px;
 }
