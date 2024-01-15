@@ -71,8 +71,7 @@ main_stage=(
     waybar
     swww
     swaylock-effects
-    wofi
-    wlogout
+    rofi
     xdg-desktop-portal-hyprland
     swappy
     grim
@@ -92,7 +91,6 @@ main_stage=(
     starship
     papirus-icon-theme
     ttf-ubuntu-font-family
-    ttf-jetbrains-mono-nerd
     noto-fonts-emoji
     nwg-look-bin
     sddm
@@ -341,9 +339,18 @@ if [[ $CFG == "Y" || $CFG == "y" ]]; then
         echo -e "$CWR - $WLDIR NOT found, creating..."
         sudo mkdir $WLDIR
     fi
-
     # stage the .desktop file
     sudo cp Extras/hyprland.desktop /usr/share/wayland-sessions/
+
+    FONTDIR=~/.local/share/fonts
+    if [ -d "$FONTDIR" ]; then
+        echo -e "$COK - $FONTDIR found"
+    else
+        echo -e "$CWR - $FONTDIR NOT found, creating..."
+        mkdir $FONTDIR
+    fi
+    cp rofi/powermenu/fonts/* $FONTDIR
+    fc-cache
 
     # setup the first look and feel preferences
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
