@@ -23,14 +23,15 @@ configuration {
 
 * {
     /* Resolution : 1920x1080 */
-    /*
     box-spacing:                 50px;
     box-margin:                  370px 350px;
-    */
 
     /* Resolution : 1366x720 */
+    /*
     box-spacing:                 50px;
     box-margin:                  200px 100px;
+    */
+
     message-margin:              0px 350px;
     inputbar-spacing:            0px;
     list-spacing:                50px;
