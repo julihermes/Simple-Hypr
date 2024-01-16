@@ -103,7 +103,6 @@ listview {
     reverse:                     false;
     fixed-height:                true;
     fixed-columns:               true;
-    
     spacing:                     5px;
     margin:                      0px;
     padding:                     0px;
@@ -172,4 +171,5 @@ textbox {
     vertical-align:              0.5;
     horizontal-align:            0.0;
     highlight:                   none;
-} 
+}
+

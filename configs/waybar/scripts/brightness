@@ -2,51 +2,53 @@
 
 iDIR="$HOME/.config/waybar/icons"
 
-# Get brightness
-get_backlight() {
-	LIGHT=$(printf "%.0f\n" $(brightnessctl i))
-	echo "${LIGHT}%"
+# Get brightness percentage
+get_percentage() {
+    max="$(brightnessctl m)"
+    cur="$(brightnessctl g)"
+    PERCENTAGE=$((cur * 100 / max))
 }
 
 # Get icons
 get_icon() {
-	backlight="$(brightnessctl g)"
-	current="${backlight%%%}"
-	if [[ ("$current" -ge "0") && ("$current" -le "52") ]]; then
-		icon="$iDIR/brightness-20.png"
-	elif [[ ("$current" -ge "52") && ("$current" -le "103") ]]; then
-		icon="$iDIR/brightness-40.png"
-	elif [[ ("$current" -ge "103") && ("$current" -le "155") ]]; then
-		icon="$iDIR/brightness-60.png"
-	elif [[ ("$current" -ge "155") && ("$current" -le "207") ]]; then
-		icon="$iDIR/brightness-80.png"
-	elif [[ ("$current" -ge "180") && ("$current" -le "255") ]]; then
-		icon="$iDIR/brightness-100.png"
-	fi
+    get_percentage
+    if [[ ("$PERCENTAGE" -ge "0") && ("$PERCENTAGE" -le "20") ]]; then
+        icon="$iDIR/brightness-20.png"
+    elif [[ ("$PERCENTAGE" -ge "20") && ("$PERCENTAGE" -le "40") ]]; then
+        icon="$iDIR/brightness-40.png"
+    elif [[ ("$PERCENTAGE" -ge "40") && ("$PERCENTAGE" -le "60") ]]; then
+        icon="$iDIR/brightness-60.png"
+    elif [[ ("$PERCENTAGE" -ge "60") && ("$PERCENTAGE" -le "80") ]]; then
+        icon="$iDIR/brightness-80.png"
+    elif [[ ("$PERCENTAGE" -ge "80") && ("$PERCENTAGE" -le "100") ]]; then
+        icon="$iDIR/brightness-100.png"
+    fi
 }
 
 # Notify
 notify_user() {
-	notify-send -h string:x-canonical-private-synchronous:sys-notify -u low -i "$icon" "Brightness : $(brightnessctl g)"
+    notify-send -h string:x-canonical-private-synchronous:sys-notify -u low -i "$icon" "Brightness : $PERCENTAGE %"
 }
 
 # Increase brightness
 inc_backlight() {
-	brightnessctl set 10%+ && get_icon && notify_user
+    brightnessctl set 10%+ && get_icon && notify_user
 }
 
 # Decrease brightness
 dec_backlight() {
-	brightnessctl set 10%- && get_icon && notify_user
+    brightnessctl set 10%- && get_icon && notify_user
 }
 
 # Execute accordingly
 if [[ "$1" == "--get" ]]; then
-	brightnessctl g
+    get_percentage
+    echo "$PERCENTAGE%"
 elif [[ "$1" == "--inc" ]]; then
-	inc_backlight
+    inc_backlight
 elif [[ "$1" == "--dec" ]]; then
-	dec_backlight
+    dec_backlight
 else
-	get_backlight
+    get_percentage
+    echo "$PERCENTAGE%"
 fi

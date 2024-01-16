@@ -9,7 +9,7 @@ cat <<"EOF"
  ___/ // // /  / / ____/ /___/ /___   / __  /   / / ____/ _, _/
 /____/___/_/  /_/_/   /_____/_____/  /_/ /_/   /_/_/   /_/ |_|
 
-Version 1.0
+Version 0.1
 EOF
 
 # Define the software that would be installed
@@ -91,6 +91,7 @@ main_stage=(
     starship
     papirus-icon-theme
     ttf-ubuntu-font-family
+    ttf-sourcecodepro-nerd
     noto-fonts-emoji
     nwg-look-bin
     sddm

@@ -154,7 +154,6 @@ listview {
     reverse:                     false;
     fixed-height:                true;
     fixed-columns:               true;
-    
     spacing:                     var(list-spacing);
     margin:                      0px;
     padding:                     0px;

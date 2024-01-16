@@ -3,49 +3,47 @@
  */
 
 @define-color cc-bg rgba(0, 0, 0, 0.2);
-
 @define-color noti-border-color rgba(205, 214, 244, 0.8);
 @define-color noti-bg rgba(0, 0, 0, 0.2);
 @define-color noti-bg-hover rgba(0, 0, 0, 0.4);
-
 @define-color bg-selected #1762e3;
 
 .notification-row:focus,
 .notification-row:hover {
-  background: none;
+    background: none;
 }
 
 .notification-default-action {
-  border-radius: 7px;
+    border-radius: 7px;
 }
 
 .control-center {
-  background: @cc-bg;
-  border-radius: 7px;
-  border: 2px solid @noti-border-color;
+    background: @cc-bg;
+    border-radius: 7px;
+    border: 2px solid @noti-border-color;
 }
 
 .notification {
-  box-shadow: none;
+    box-shadow: none;
 }
 
 .image {
-  margin: 10px;
+    margin: 10px;
 }
 
 .blank-window {
-  background: none;
+    background: none;
 }
 
 .floating-notifications {
-  background: none;
+    background: none;
 }
 
 .floating-notifications .notification {
-  background: none;
-  box-shadow: none;
+    background: none;
+    box-shadow: none;
 }
 
 .widget-title > button {
-  border-radius: 8px;
+    border-radius: 8px;
 }
