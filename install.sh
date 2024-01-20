@@ -15,20 +15,8 @@ EOF
 # Define the software that would be installed
 # Need some prep work
 prep_stage=(
-    qt5-wayland
-    qt5ct
-    qt6-wayland
-    qt6ct
-    qt5-svg
-    qt5-quickcontrols2
-    qt5-graphicaleffects
     gtk3
     polkit-gnome
-    pipewire
-    wireplumber
-    jq
-    wl-clipboard
-    cliphist
     python-requests
     pacman-contrib
     linux-headers
@@ -66,17 +54,15 @@ amd_stage=(
 
 #the main packages
 main_stage=(
+    xdg-desktop-portal-hyprland
     kitty
-    swaync
     waybar
-    swww
+    swaync
     swaylock-effects
     rofi
-    xdg-desktop-portal-hyprland
     swappy
     grim
     slurp
-    btop
     pamixer
     pavucontrol
     brightnessctl
@@ -84,23 +70,24 @@ main_stage=(
     bluez-utils
     blueman
     network-manager-applet
-    gvfs
     file-roller
     nemo
     nemo-fileroller
-    starship
     papirus-icon-theme
     ttf-ubuntu-font-family
     ttf-sourcecodepro-nerd
     noto-fonts-emoji
     nwg-look-bin
+    btop
+    starship
     sddm
 )
 
 #personal packages
 personal_stage=(
+    keyd
     lsd
-    thunderbird
+    #thunderbird
 )
 
 # set some colors
@@ -144,8 +131,31 @@ install_software() {
     fi
 }
 
+# set some expectations for the user
+echo -e "$CNT - You are about to execute a script that would attempt to setup Hyprland.
+This script was designed for a fresh minimal installation of Arch Linux with git installed,
+if your scenario is different from this, make sure you know what you are doing."
+sleep 1
 
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to install the packages? (y,n) ' INST
+# attempt to discover if this is a VM or not
+echo -e "$CNT - Checking for Physical or VM..."
+ISVM=$(hostnamectl | grep Chassis)
+echo -e "Using $ISVM"
+if [[ $ISVM == *"vm"* ]]; then
+    echo -e "$CWR - Please note that VMs are not fully supported and if you try to run this on
+    a Virtual Machine there is a high chance this will fail."
+    sleep 1
+fi
+
+# give the user an option to exit out
+read -rep $'[\e[1;33mACTION\e[0m] - Would you like to continue with the install (y,n) ' CONTINST
+if [[ $CONTINST == "Y" || $CONTINST == "y" ]]; then
+    echo -e "$CNT - Setup starting..."
+    sudo touch /tmp/hyprv.tmp
+else
+    echo -e "$CNT - This script will now exit, no changes were made to your system."
+    exit
+fi
 
 echo $'[\e[1;33mACTION\e[0m] - Would you like to install GPU drivers? (leave blank if you dont)
     1) Intel
@@ -175,7 +185,7 @@ echo -e "\e[1A\e[K$COK - pacman updated."
 
 #### Check for package manager ####
 if [ ! -f /sbin/yay ]; then  
-    echo -en "$CNT - Configuering yay."
+    echo -en "$CNT - Configuring yay."
     git clone https://aur.archlinux.org/yay.git &>> $INSTLOG
     cd yay
     makepkg -si --noconfirm &>> ../$INSTLOG &
@@ -196,170 +206,154 @@ if [ ! -f /sbin/yay ]; then
     fi
 fi
 
-### Install all of the above pacakges ####
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to install the packages? (y,n) ' INST
+# Prep Stage - Bunch of needed items
+echo -e "$CNT - Prep Stage - Installing needed components, this may take a while..."
+for SOFTWR in ${prep_stage[@]}; do
+    install_software $SOFTWR
+done
+
+# Setup Intel if it was found
+if [[ "$ISINTEL" == true ]]; then
+    echo -e "$CNT - Intel GPU support setup stage, this may take a while..."
+    for SOFTWR in ${intel_stage[@]}; do
+        install_software $SOFTWR
+    done
+fi
+
+# Setup Nvidia if it was found
+if [[ "$ISNVIDIA" == true ]]; then
+    echo -e "$CNT - Nvidia GPU support setup stage, this may take a while..."
+    for SOFTWR in ${nvidia_stage[@]}; do
+        install_software $SOFTWR
+    done
+
+    # update config
+    sudo sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+    sudo mkinitcpio --config /etc/mkinitcpio.conf --generate /boot/initramfs-custom.img
+    echo -e "options nvidia-drm modeset=1" | sudo tee -a /etc/modprobe.d/nvidia.conf &>> $INSTLOG
+fi
+
+# Setup AMD if it was found
+if [[ "$ISAMD" == true ]]; then
+    echo -e "$CNT - AMD GPU support setup stage, this may take a while..."
+    for SOFTWR in ${amd_stage[@]}; do
+        install_software $SOFTWR
+    done
+fi
+
+# Install the correct hyprland version
+echo -e "$CNT - Installing Hyprland, this may take a while..."
+if [[ "$ISNVIDIA" == true ]]; then
+    #check for hyprland and remove it so the -nvidia package can be installed
+    if yay -Q hyprland &>> /dev/null ; then
+        yay -R --noconfirm hyprland &>> $INSTLOG &
+    fi
+    install_software hyprland-nvidia
+else
+    install_software hyprland
+fi
+
+# main components
+echo -e "$CNT - Installing main components, this may take a while..."
+for SOFTWR in ${main_stage[@]}; do
+    install_software $SOFTWR
+done
+
+# Start the bluetooth service
+echo -e "$CNT - Starting the Bluetooth Service..."
+sudo systemctl enable --now bluetooth.service &>> $INSTLOG
+sleep 2
+
+# Enable the sddm login manager service
+echo -e "$CNT - Enabling the SDDM Service..."
+sudo systemctl enable sddm &>> $INSTLOG
+sleep 2
+
+# Clean out other portals
+echo -e "$CNT - Cleaning out conflicting xdg portals..."
+yay -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
+
+### ask if want to install personal pacakges ####
+read -rep $'[\e[1;33mACTION\e[0m] - Would you like to install the personal packages? (y,n) ' INST
 if [[ $INST == "Y" || $INST == "y" ]]; then
-
-    # Prep Stage - Bunch of needed items
-    echo -e "$CNT - Prep Stage - Installing needed components, this may take a while..."
-    for SOFTWR in ${prep_stage[@]}; do
-        install_software $SOFTWR 
-    done
-
-    # Setup Intel if it was found
-    if [[ "$ISINTEL" == true ]]; then
-        echo -e "$CNT - Intel GPU support setup stage, this may take a while..."
-        for SOFTWR in ${intel_stage[@]}; do
-            install_software $SOFTWR
-        done
-    fi
-
-    # Setup Nvidia if it was found
-    if [[ "$ISNVIDIA" == true ]]; then
-        echo -e "$CNT - Nvidia GPU support setup stage, this may take a while..."
-        for SOFTWR in ${nvidia_stage[@]}; do
-            install_software $SOFTWR
-        done
-
-        # update config
-        sudo sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
-        sudo mkinitcpio --config /etc/mkinitcpio.conf --generate /boot/initramfs-custom.img
-        echo -e "options nvidia-drm modeset=1" | sudo tee -a /etc/modprobe.d/nvidia.conf &>> $INSTLOG
-    fi
-
-    # Setup AMD if it was found
-    if [[ "$ISAMD" == true ]]; then
-        echo -e "$CNT - AMD GPU support setup stage, this may take a while..."
-        for SOFTWR in ${amd_stage[@]}; do
-            install_software $SOFTWR
-        done
-    fi
-
-    # Install the correct hyprland version
-    echo -e "$CNT - Installing Hyprland, this may take a while..."
-    if [[ "$ISNVIDIA" == true ]]; then
-        #check for hyprland and remove it so the -nvidia package can be installed
-        if yay -Q hyprland &>> /dev/null ; then
-            yay -R --noconfirm hyprland &>> $INSTLOG &
-        fi
-        install_software hyprland-nvidia
-    else
-        install_software hyprland
-    fi
-
-    # main components
-    echo -e "$CNT - Installing main components, this may take a while..."
-    for SOFTWR in ${main_stage[@]}; do
-        install_software $SOFTWR 
-    done
-
     # personal components
     echo -e "$CNT - Installing main components, this may take a while..."
     for SOFTWR in ${personal_stage[@]}; do
-        install_software $SOFTWR 
+        install_software $SOFTWR
     done
-
-    # Start the bluetooth service
-    echo -e "$CNT - Starting the Bluetooth Service..."
-    sudo systemctl enable --now bluetooth.service &>> $INSTLOG
-    sleep 2
-
-    # Enable the sddm login manager service
-    echo -e "$CNT - Enabling the SDDM Service..."
-    sudo systemctl enable sddm &>> $INSTLOG
-    sleep 2
-
-    # Clean out other portals
-    echo -e "$CNT - Cleaning out conflicting xdg portals..."
-    yay -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
 fi
 
-### Copy Config Files ###
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy config files? (y,n) ' CFG
-if [[ $CFG == "Y" || $CFG == "y" ]]; then
-    echo -e "$CNT - Copying config files..."
-
-    # copy the HyprV directory
-    #cp -R HyprV ~/.config/
-
-    #set the measuring unit
-    echo -e "$CNT - Attempring to set mesuring unit..."
-    if locale -a | grep -q ^en_US; then
-        echo -e "$COK - Setting mesuring system to imperial..."
-        ln -sf ~/.config/HyprV/waybar/conf/mesu-imp.jsonc ~/.config/HyprV/waybar/conf/mesu.jsonc
-        sed -i 's/SET_MESU=""/SET_MESU="I"/' ~/.config/HyprV/hyprv.conf
-    else
-        echo -e "$COK - Setting mesuring system to metric..."
-        sed -i 's/SET_MESU=""/SET_MESU="M"/' ~/.config/HyprV/hyprv.conf
-        ln -sf ~/.config/HyprV/waybar/conf/mesu-met.jsonc ~/.config/HyprV/waybar/conf/mesu.jsonc
+# Setup each appliaction
+# check for existing config folders and backup
+for DIR in hypr kitty rofi swaylock swaync waybar
+do
+    DIRPATH=~/.config/$DIR
+    if [ -d "$DIRPATH" ]; then 
+        echo -e "$CAT - Config for $DIR located, backing up."
+        mv $DIRPATH $DIRPATH-back &>> $INSTLOG
+        echo -e "$COK - Backed up $DIR to $DIRPATH-back."
     fi
 
-    # Setup each appliaction
-    # check for existing config folders and backup 
-    for DIR in hypr kitty mako swaylock waybar wlogout wofi
-    do
-        DIRPATH=~/.config/$DIR
-        if [ -d "$DIRPATH" ]; then 
-            echo -e "$CAT - Config for $DIR located, backing up."
-            mv $DIRPATH $DIRPATH-back &>> $INSTLOG
-            echo -e "$COK - Backed up $DIR to $DIRPATH-back."
-        fi
+    # make new empty folders
+    mkdir -p $DIRPATH &>> $INSTLOG
+done
 
-        # make new empty folders
-        mkdir -p $DIRPATH &>> $INSTLOG
-    done
+echo -e "$CNT - Copying config files..."
+cp configs/hypr/* ~/.config/hypr/
+cp configs/kitty/* ~/.config/kitty/
+cp configs/rofi/* ~/.config/rofi/
+cp configs/swaylock/* ~/.config/swaylock/*
+cp configs/swaync/* ~/.config/swaync/*
+cp configs/waybar/* ~/.config/waybar/
 
-    # link up the config files
-    echo -e "$CNT - Setting up the new config..." 
-    cp HyprV/hypr/* ~/.config/hypr/
-    cp HyprV/kitty/kitty.conf ~/.config/kitty/kitty.conf
-    cp HyprV/mako/conf/config-dark ~/.config/mako/config
-    cp HyprV/swaylock/config ~/.config/swaylock/config
-    cp HyprV/waybar/conf/v4-config.jsonc ~/.config/waybar/config.jsonc
-    cp HyprV/waybar/style/v4-style-dark.css ~/.config/waybar/style.css
-    cp HyprV/wlogout/layout ~/.config/wlogout/layout
-    cp HyprV/wofi/config ~/.config/wofi/config
-    cp HyprV/wofi/style/v4-style-dark.css ~/.config/wofi/style.css
+# add the Nvidia env file to the config (if needed)
+if [[ "$ISNVIDIA" == true ]]; then
+    echo -e "\nsource = ~/.config/hypr/configs/env_nvidia.conf" >> ~/.config/hypr/hyprland.conf
+fi
 
+# Copy the SDDM theme
+echo -e "$CNT - Setting up the login screen."
+sudo cp -R configs/sdt /usr/share/sddm/themes/
+sudo chown -R $USER:$USER /usr/share/sddm/themes/sdt
+sudo mkdir /etc/sddm.conf.d
+echo -e "[Theme]\nCurrent=sdt" | sudo tee -a /etc/sddm.conf.d/10-theme.conf &>> $INSTLOG
+WLDIR=/usr/share/wayland-sessions
+if [ -d "$WLDIR" ]; then
+    echo -e "$COK - $WLDIR found"
+else
+    echo -e "$CWR - $WLDIR NOT found, creating..."
+    sudo mkdir $WLDIR
+fi
+# stage the .desktop file
+sudo cp configs/hyprland.desktop /usr/share/wayland-sessions/
 
-    # add the Nvidia env file to the config (if needed)
-    if [[ "$ISNVIDIA" == true ]]; then
-        echo -e "\nsource = ~/.config/hypr/env_var_nvidia.conf" >> ~/.config/hypr/hyprland.conf
-    fi
+FONTDIR=~/.local/share/fonts
+if [ -d "$FONTDIR" ]; then
+    echo -e "$COK - $FONTDIR found"
+else
+    echo -e "$CWR - $FONTDIR NOT found, creating..."
+    mkdir $FONTDIR
+fi
+cp configs/rofi/powermenu/fonts/* $FONTDIR
+fc-cache
 
-    # Copy the SDDM theme
-    echo -e "$CNT - Setting up the login screen."
-    sudo cp -R Extras/sdt /usr/share/sddm/themes/
-    sudo chown -R $USER:$USER /usr/share/sddm/themes/sdt
-    sudo mkdir /etc/sddm.conf.d
-    echo -e "[Theme]\nCurrent=sdt" | sudo tee -a /etc/sddm.conf.d/10-theme.conf &>> $INSTLOG
-    WLDIR=/usr/share/wayland-sessions
-    if [ -d "$WLDIR" ]; then
-        echo -e "$COK - $WLDIR found"
-    else
-        echo -e "$CWR - $WLDIR NOT found, creating..."
-        sudo mkdir $WLDIR
-    fi
-    # stage the .desktop file
-    sudo cp Extras/hyprland.desktop /usr/share/wayland-sessions/
+# setup the first look and feel preferences
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
+gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
+gsettings set org.nemo.desktop show-desktop-icons false
+gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
 
-    FONTDIR=~/.local/share/fonts
-    if [ -d "$FONTDIR" ]; then
-        echo -e "$COK - $FONTDIR found"
-    else
-        echo -e "$CWR - $FONTDIR NOT found, creating..."
-        mkdir $FONTDIR
-    fi
-    cp rofi/powermenu/fonts/* $FONTDIR
-    fc-cache
+cp configs/user-dirs.dirs ~/.config/user-dirs.dirs
 
-    # setup the first look and feel preferences
-    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-    gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
-    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
-    gsettings set org.nemo.desktop show-desktop-icons false
-    gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
-    cp -f HyprV/backgrounds/v4-background-dark.jpg /usr/share/sddm/themes/sdt/wallpaper.jpg
+if [ -x "$(command -v keyd)" ]; then
+    sudo cp configs/keyd.config /etc/keyd/default.conf
+fi
+
+### copy .bachrc ###
+read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file? (y,n) ' BASHRC
+if [[ $BACHRC == "Y" || $BASHRC == "y" ]]; then
+    cp configs/.bashrc ~/.bashrc
 fi
 
 ### Install the starship shell ###
@@ -370,7 +364,7 @@ if [[ $STAR == "Y" || $STAR == "y" ]]; then
     echo -e "$CNT - Updating .bashrc..."
     echo -e '\neval "$(starship init bash)"' >> ~/.bashrc
     echo -e "$CNT - copying starship config file to ~/.config ..."
-    cp Extras/starship.toml ~/.config/
+    cp configs/starship.toml ~/.config/
 fi
 
 ### Script is done ###
