@@ -299,12 +299,12 @@ do
 done
 
 echo -e "$CNT - Copying config files..."
-cp configs/hypr/* ~/.config/hypr/
-cp configs/kitty/* ~/.config/kitty/
-cp configs/rofi/* ~/.config/rofi/
-cp configs/swaylock/* ~/.config/swaylock/*
-cp configs/swaync/* ~/.config/swaync/*
-cp configs/waybar/* ~/.config/waybar/
+cp -r configs/hypr/* ~/.config/hypr/
+cp -r configs/kitty/* ~/.config/kitty/
+cp -r configs/rofi/* ~/.config/rofi/
+cp -r configs/swaylock/* ~/.config/swaylock/*
+cp -r configs/swaync/* ~/.config/swaync/*
+cp -r configs/waybar/* ~/.config/waybar/
 
 # add the Nvidia env file to the config (if needed)
 if [[ "$ISNVIDIA" == true ]]; then
@@ -334,7 +334,7 @@ else
     echo -e "$CWR - $FONTDIR NOT found, creating..."
     mkdir $FONTDIR
 fi
-cp configs/rofi/powermenu/fonts/* $FONTDIR
+cp -r configs/rofi/powermenu/fonts/* $FONTDIR
 fc-cache
 
 # setup the first look and feel preferences
@@ -353,7 +353,7 @@ fi
 ### copy .bachrc ###
 read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file? (y,n) ' BASHRC
 if [[ $BACHRC == "Y" || $BASHRC == "y" ]]; then
-    cp configs/.bashrc ~/.bashrc
+    cp -f configs/.bashrc ~/.bashrc
 fi
 
 ### Install the starship shell ###
