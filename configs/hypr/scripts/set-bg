@@ -1,0 +1,19 @@
+#!/bin/bash
+
+full_path=""
+file=""
+
+for entry in ~/.config/hypr/background/*
+do
+    if [[ $(file -b $entry) =~ PNG|JPEG ]]; then
+        full_path="$entry"
+        file="$(basename $entry)"
+        break
+    fi
+done
+
+if [ "$full_path" != "" ]; then
+    cp -f $full_path  /usr/share/sddm/themes/sdt/$file
+    nohup swaybg -i $full_path &>/dev/null &
+fi
+
