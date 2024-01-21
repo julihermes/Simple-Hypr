@@ -313,7 +313,7 @@ cp -r configs/waybar/* ~/.config/waybar/
 
 # add the Nvidia env file to the config (if needed)
 if [[ "$ISNVIDIA" == true ]]; then
-    echo -e "\nsource = ~/.config/hypr/configs/env_nvidia.conf" >> ~/.config/hypr/hyprland.conf
+    echo -e "\nsource = ~/.config/hypr/configs/env_nvidia.conf" >> ~/.config/hypr/configs/env.conf
 fi
 
 # Copy the SDDM theme
@@ -355,12 +355,6 @@ if [ -x "$(command -v keyd)" ]; then
     sudo cp configs/keyd.config /etc/keyd/default.conf
 fi
 
-### copy .bachrc ###
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file? (y,n) ' BASHRC
-if [[ $BACHRC == "Y" || $BASHRC == "y" ]]; then
-    cp -f configs/.bashrc ~/.bashrc
-fi
-
 ### Install the starship shell ###
 read -rep $'[\e[1;33mACTION\e[0m] - Would you like to activate the starship shell? (y,n) ' STAR
 if [[ $STAR == "Y" || $STAR == "y" ]]; then
@@ -370,6 +364,12 @@ if [[ $STAR == "Y" || $STAR == "y" ]]; then
     echo -e '\neval "$(starship init bash)"' >> ~/.bashrc
     echo -e "$CNT - copying starship config file to ~/.config ..."
     cp configs/starship.toml ~/.config/
+fi
+
+### copy .bachrc ###
+read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file? (y,n) ' BASHRC
+if [[ $BACHRC == "Y" || $BASHRC == "y" ]]; then
+    cp -f configs/.bashrc ~/.bashrc
 fi
 
 ### Script is done ###
