@@ -60,6 +60,7 @@ main_stage=(
     xdg-desktop-portal-hyprland
     kitty
     waybar
+    swaybg
     swaync
     swaylock-effects
     rofi
@@ -76,6 +77,7 @@ main_stage=(
     file-roller
     nemo
     nemo-fileroller
+    gnome-themes-extra
     papirus-icon-theme
     ttf-ubuntu-font-family
     ttf-sourcecodepro-nerd
@@ -305,8 +307,8 @@ echo -e "$CNT - Copying config files..."
 cp -r configs/hypr/* ~/.config/hypr/
 cp -r configs/kitty/* ~/.config/kitty/
 cp -r configs/rofi/* ~/.config/rofi/
-cp -r configs/swaylock/* ~/.config/swaylock/*
-cp -r configs/swaync/* ~/.config/swaync/*
+cp -r configs/swaylock/* ~/.config/swaylock/
+cp -r configs/swaync/* ~/.config/swaync/
 cp -r configs/waybar/* ~/.config/waybar/
 
 # add the Nvidia env file to the config (if needed)
@@ -341,7 +343,7 @@ cp -r configs/rofi/powermenu/fonts/* $FONTDIR
 fc-cache
 
 # setup the first look and feel preferences
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
 gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
 gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
 gsettings set org.nemo.desktop show-desktop-icons false
@@ -372,7 +374,7 @@ fi
 
 ### Script is done ###
 echo -e "$CNT - Script had completed!"
-if [[ "$ISNVIDIA" == true ] || [ "$ISINTEL" == true ] || [ "$ISAMD" == true]]; then
+if [[ $ISNVIDIA == true || $ISINTEL == true || $ISAMD == true ]]; then
     echo -e "$CAT - Since we attempted to setup an GPU the script will now end and you should reboot.
     Please type 'reboot' at the prompt and hit Enter when ready."
     exit
