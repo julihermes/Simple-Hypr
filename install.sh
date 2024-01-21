@@ -15,6 +15,9 @@ EOF
 # Define the software that would be installed
 # Need some prep work
 prep_stage=(
+    qt5-svg
+    qt5-quickcontrols2
+    qt5-graphicaleffects
     gtk3
     polkit-gnome
     python-requests
@@ -184,7 +187,7 @@ echo -e "\e[1A\e[K$COK - pacman updated."
 
 
 #### Check for package manager ####
-if [ ! -f /sbin/yay ]; then  
+if [ ! -f /sbin/yay ]; then
     echo -en "$CNT - Configuring yay."
     git clone https://aur.archlinux.org/yay.git &>> $INSTLOG
     cd yay
@@ -288,7 +291,7 @@ fi
 for DIR in hypr kitty rofi swaylock swaync waybar
 do
     DIRPATH=~/.config/$DIR
-    if [ -d "$DIRPATH" ]; then 
+    if [ -d "$DIRPATH" ]; then
         echo -e "$CAT - Config for $DIR located, backing up."
         mv $DIRPATH $DIRPATH-back &>> $INSTLOG
         echo -e "$COK - Backed up $DIR to $DIRPATH-back."
@@ -332,7 +335,7 @@ if [ -d "$FONTDIR" ]; then
     echo -e "$COK - $FONTDIR found"
 else
     echo -e "$CWR - $FONTDIR NOT found, creating..."
-    mkdir $FONTDIR
+    mkdir -p $FONTDIR
 fi
 cp -r configs/rofi/powermenu/fonts/* $FONTDIR
 fc-cache
@@ -369,7 +372,7 @@ fi
 
 ### Script is done ###
 echo -e "$CNT - Script had completed!"
-if [[ "$ISNVIDIA" == true ||  "$ISINTEL" == true || "$ISAMD" == true]]; then 
+if [[ "$ISNVIDIA" == true ] || [ "$ISINTEL" == true ] || [ "$ISAMD" == true]]; then
     echo -e "$CAT - Since we attempted to setup an GPU the script will now end and you should reboot.
     Please type 'reboot' at the prompt and hit Enter when ready."
     exit
