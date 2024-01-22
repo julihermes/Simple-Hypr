@@ -86,10 +86,13 @@ main_stage=(
     btop
     starship
     sddm
+    bash-completion
 )
 
 #personal packages
 personal_stage=(
+    neovim
+    lazygit
     keyd
     lsd
     #thunderbird
@@ -183,7 +186,7 @@ esac
 
 #### Update pacman ####
 echo -en "$CNT - Updating pacman."
-sudo pacman -Sy &
+sudo pacman -Syy &>> $INSTLOG &
 show_progress $!
 echo -e "\e[1A\e[K$COK - pacman updated."
 
