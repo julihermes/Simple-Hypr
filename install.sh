@@ -293,7 +293,7 @@ fi
 
 # Setup each appliaction
 # check for existing config folders and backup
-for DIR in hypr kitty rofi swaylock swaync waybar
+for DIR in hypr btop kitty rofi swaylock swaync waybar
 do
     DIRPATH=~/.config/$DIR
     if [ -d "$DIRPATH" ]; then
@@ -308,6 +308,7 @@ done
 
 echo -e "$CNT - Copying config files..."
 cp -r configs/hypr/* ~/.config/hypr/
+cp -r configs/btop/* ~/.config/btop/
 cp -r configs/kitty/* ~/.config/kitty/
 cp -r configs/rofi/* ~/.config/rofi/
 cp -r configs/swaylock/* ~/.config/swaylock/
