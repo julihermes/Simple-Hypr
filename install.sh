@@ -320,6 +320,25 @@ if [[ "$ISNVIDIA" == true ]]; then
     echo -e "\nsource = ~/.config/hypr/configs/env_nvidia.conf" >> ~/.config/hypr/configs/env.conf
 fi
 
+FONTDIR=~/.local/share/fonts
+if [ -d "$FONTDIR" ]; then
+    echo -e "$COK - $FONTDIR found"
+else
+    echo -e "$CWR - $FONTDIR NOT found, creating..."
+    mkdir -p $FONTDIR
+fi
+cp -r configs/rofi/powermenu/fonts/* $FONTDIR
+fc-cache
+
+APPSDIR=~/.local/share/applications
+if [ -d "$APPSDIR" ]; then
+    echo -e "$COK - $APPSDIR found"
+else
+    echo -e "$CWR - $APPSDIR NOT found, creating..."
+    mkdir -p $APPSDIR
+fi
+cp -r configs/desktops/* $APPSDIR
+
 # Copy the SDDM theme
 echo -e "$CNT - Setting up the login screen."
 sudo cp -R configs/sdt /usr/share/sddm/themes/
@@ -334,17 +353,7 @@ else
     sudo mkdir $WLDIR
 fi
 # stage the .desktop file
-sudo cp configs/hyprland.desktop /usr/share/wayland-sessions/
-
-FONTDIR=~/.local/share/fonts
-if [ -d "$FONTDIR" ]; then
-    echo -e "$COK - $FONTDIR found"
-else
-    echo -e "$CWR - $FONTDIR NOT found, creating..."
-    mkdir -p $FONTDIR
-fi
-cp -r configs/rofi/powermenu/fonts/* $FONTDIR
-fc-cache
+sudo mv ~/.local/share/applications/hyprland.desktop /usr/share/wayland-sessions/
 
 # setup the first look and feel preferences
 gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
