@@ -11,7 +11,11 @@ do
 done
 
 if [ "$path" != "" ]; then
+    wal -nsteq -i $path
     cp -f $path  /usr/share/sddm/themes/sdt/wallpaper.jpg
     nohup swaybg -i $path &>/dev/null &
+    sleep 1
+    killall -SIGUSR2 waybar
+    swaync-client -rs
 fi
 

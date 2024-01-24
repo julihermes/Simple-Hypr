@@ -1,3 +1,5 @@
+@import '../../.cache/wal/colors-waybar.css';
+
 * {
     border: none;
     border-radius: 0;
@@ -42,7 +44,7 @@
 /* Fix: active workspace doesn't show up */
 /* #workspaces button.focused { */
 #workspaces button.active {
-    color: #1762e3;
+    color: @color2;
 }
 
 #workspaces button:hover {
@@ -66,5 +68,9 @@
 
 #tray menu menuitem{
     padding: 5px;
+}
+
+#tray menu menuitem:hover{
+    background: @color2;
 }
 

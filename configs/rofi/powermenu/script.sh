@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
+source ~/.cache/wal/colors.sh
+
 # CMDs
 uptime="`uptime -p | sed -e 's/up //g'`"
+host=`hostname`
 
 # Options
 shutdown=''
@@ -64,7 +67,7 @@ case ${chosen} in
     $reboot)
         run_cmd reboot;;
     $lock)
-        swaylock;;
+        swaylock --key-hl-color $color2 --line-ver-color $color2 --ring-ver-color $color2;;
     $suspend)
         run_cmd suspend;;
     $logout)

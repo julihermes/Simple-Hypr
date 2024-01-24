@@ -85,6 +85,7 @@ main_stage=(
     nwg-look-bin
     btop
     starship
+    python-pywal
     sddm
     bash-completion
 )
@@ -338,6 +339,16 @@ else
     mkdir -p $APPSDIR
 fi
 cp -r configs/desktops/* $APPSDIR
+
+
+NEMOACDIR=~/.local/share/nemo/actions
+if [ -d "$NEMOACDIR" ]; then
+    echo -e "$COK - $NEMOACDIR found"
+else
+    echo -e "$CWR - $NEMOACDIR NOT found, creating..."
+    mkdir -p $NEMOACDIR
+fi
+cp configs/set_as_background.nemo_action $NEMOACDIR/
 
 # Copy the SDDM theme
 echo -e "$CNT - Setting up the login screen."

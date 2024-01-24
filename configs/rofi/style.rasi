@@ -1,3 +1,5 @@
+@import "~/.cache/wal/colors-rofi-dark.rasi"
+
 /*****----- Configuration -----*****/
 configuration {
     modi:                       "drun";
@@ -14,12 +16,9 @@ configuration {
     background:     rgba(0,0,0,0.4);
     background-alt: #282B31FF;
     foreground:     #FFFFFFFF;
-    selected:       #1762e3FF;
+    selected:       @active-background;
     active:         #98C379FF;
     urgent:         #E06C75FF;
-}
-
-* {
     font: "Ubuntu Nerd Font Regular 10";
 }
 
@@ -103,6 +102,7 @@ listview {
     reverse:                     false;
     fixed-height:                true;
     fixed-columns:               true;
+    
     spacing:                     5px;
     margin:                      0px;
     padding:                     0px;
@@ -134,6 +134,10 @@ element {
     cursor:                      pointer;
 }
 element normal.normal {
+    background-color:            transparent;
+    text-color:                  @foreground;
+}
+element alternate.normal {
     background-color:            transparent;
     text-color:                  @foreground;
 }
@@ -171,5 +175,4 @@ textbox {
     vertical-align:              0.5;
     horizontal-align:            0.0;
     highlight:                   none;
-}
-
+} 

@@ -1,0 +1,9 @@
+[Nemo Action]
+
+Name=Set as Background
+Comment=Set the selected image as dekstop background
+Exec=/bin/bash -c '$HOME/.config/hypr/scripts/nemo-set-bg %F'
+Icon-Name=image-x-generic
+Selection=any
+Extensions=jpg;jpeg;png;
+

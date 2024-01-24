@@ -1,3 +1,5 @@
+@import "~/.cache/wal/colors-rofi-dark.rasi"
+
 /*****----- Configuration -----*****/
 configuration {
     show-icons:                 false;
@@ -11,17 +13,11 @@ configuration {
     background:     rgba(0,0,0,0.4);
     background-alt: rgba(0,0,0,0.4);
     foreground:     #FFFFFFFF;
-    selected:       #1762e3FF;
+    selected:       @active-background;
     active:         #98C379FF;
     urgent:         #E06C75FF;
-}
-
-* {
     font: "Ubuntu Nerd Font Regular 10";
-}
 
-
-* {
     /* Resolution : 1920x1080 */
     box-spacing:                 50px;
     box-margin:                  370px 350px;
@@ -154,6 +150,7 @@ listview {
     reverse:                     false;
     fixed-height:                true;
     fixed-columns:               true;
+    
     spacing:                     var(list-spacing);
     margin:                      0px;
     padding:                     0px;
