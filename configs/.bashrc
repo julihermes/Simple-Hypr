@@ -9,9 +9,9 @@ alias ls='lsd -A'
 alias ll='lsd -lA'
 alias lt='lsd --tree'
 alias nv='nvim'
-alias vi='nvim'
+alias lg='lazygit'
+alias ..='cd ../'
 alias grep='grep --color=auto'
-PS1='[\u@\h \W]\$ '
 
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"

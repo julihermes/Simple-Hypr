@@ -88,6 +88,7 @@ main_stage=(
     python-pywal
     sddm
     bash-completion
+    chromium
 )
 
 #personal packages
