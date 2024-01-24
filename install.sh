@@ -78,11 +78,11 @@ main_stage=(
     nemo
     nemo-fileroller
     gnome-themes-extra
-    papirus-icon-theme
+    arc-gtk-theme
+    tela-icon-theme
     ttf-ubuntu-font-family
     ttf-sourcecodepro-nerd
     noto-fonts-emoji
-    nwg-look-bin
     btop
     starship
     python-pywal
@@ -369,8 +369,8 @@ sudo mv ~/.local/share/applications/hyprland.desktop /usr/share/wayland-sessions
 
 # setup the first look and feel preferences
 gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
-gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
-gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
+gsettings set org.gnome.desktop.interface gtk-theme "Arc-Dark"
+gsettings set org.gnome.desktop.interface icon-theme "Tela"
 gsettings set org.nemo.desktop show-desktop-icons false
 gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
 
