@@ -93,11 +93,14 @@ main_stage=(
 
 #personal packages
 personal_stage=(
+    gnome-calculator
+    evince
+    image-roll
+    celluloid
     neovim
     lazygit
     keyd
     lsd
-    #thunderbird
 )
 
 # set some colors
