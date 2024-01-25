@@ -10,6 +10,7 @@ alias ll='lsd -lA'
 alias lt='lsd --tree'
 alias nv='nvim'
 alias lg='lazygit'
+alias sp='sudo pacman'
 alias ..='cd ../'
 alias grep='grep --color=auto'
 

@@ -88,19 +88,24 @@ main_stage=(
     python-pywal
     sddm
     bash-completion
-    chromium
+    neofetch
+    firefox
 )
 
 #personal packages
 personal_stage=(
+    keyd
+    neovim
+    lsd
+    lazygit
     gnome-calculator
     evince
     image-roll
-    celluloid
-    neovim
-    lazygit
-    keyd
-    lsd
+    totem
+    gst-libav
+    gnome-disk-utility
+    enpass-bin
+    google-chrome
 )
 
 # set some colors
@@ -195,6 +200,11 @@ sudo pacman -Syy &>> $INSTLOG &
 show_progress $!
 echo -e "\e[1A\e[K$COK - pacman updated."
 
+#### Update applications ####
+echo -en "$CNT - Updating applications."
+sudo pacman -Suy &>> $INSTLOG &
+show_progress $!
+echo -e "\e[1A\e[K$COK - applications updated."
 
 #### Check for package manager ####
 if [ ! -f /sbin/yay ]; then
@@ -395,7 +405,7 @@ if [[ $STAR == "Y" || $STAR == "y" ]]; then
 fi
 
 ### copy .bachrc ###
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file? (y,n) ' BASHRC
+read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file? (not recommended if you have changed the personal package list a lot) (y,n) ' BASHRC
 if [[ $BACHRC == "Y" || $BASHRC == "y" ]]; then
     cp -f configs/.bashrc ~/.bashrc
 fi
