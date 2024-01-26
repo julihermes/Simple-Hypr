@@ -79,7 +79,6 @@ main_stage=(
     nemo-fileroller
     gnome-themes-extra
     arc-gtk-theme
-    tela-icon-theme
     ttf-ubuntu-font-family
     ttf-sourcecodepro-nerd
     noto-fonts-emoji
@@ -281,6 +280,19 @@ echo -e "$CNT - Installing main components, this may take a while..."
 for SOFTWR in ${main_stage[@]}; do
     install_software $SOFTWR
 done
+
+echo -en "$CNT - Instaling icon theme."
+git clone https://github.com/vinceliuice/Tela-icon-theme.git &>> $INSTLOG
+cd Tela-icon-theme
+./install.sh &>> ../$INSTLOG &
+show_progress $!
+if [ -d "~/.local/share/icons/Tela" ]; then
+    echo -e "\e[1A\e[K$COK - icon theme configured"
+else
+    echo -e "\e[1A\e[K$CER - icon theme install failed, please check the install.log"
+fi
+cd ..
+
 
 # Start the bluetooth service
 echo -e "$CNT - Starting the Bluetooth Service..."
