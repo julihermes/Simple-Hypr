@@ -286,7 +286,7 @@ git clone https://github.com/vinceliuice/Tela-icon-theme.git &>> $INSTLOG
 cd Tela-icon-theme
 ./install.sh &>> ../$INSTLOG &
 show_progress $!
-if [ -d "~/.local/share/icons/Tela" ]; then
+if [ -d "$HOME/.local/share/icons/Tela" ]; then
     echo -e "\e[1A\e[K$COK - icon theme configured"
 else
     echo -e "\e[1A\e[K$CER - icon theme install failed, please check the install.log"
