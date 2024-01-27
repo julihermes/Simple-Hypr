@@ -28,7 +28,7 @@ if [ "$1" = "" ]; then
     then
         echo "{\"text\": \"\"}"
     else
-        echo "{\"text\": \"  $COUNT\", \"tooltip\": \"Oficial: $OFFICIAL | AUR: $AUR\"}"
+        echo "{\"text\": \"  $COUNT\", \"tooltip\": \"Oficial: $OFFICIAL | AUR: $AUR\"}"
     fi
     exit 0
 fi
