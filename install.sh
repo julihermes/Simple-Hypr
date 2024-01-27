@@ -423,16 +423,6 @@ if [[ $BACHRC == "Y" || $BASHRC == "y" ]]; then
 fi
 
 ### Script is done ###
-echo -e "$CNT - Script had completed!"
-if [[ $ISNVIDIA == true || $ISINTEL == true || $ISAMD == true ]]; then
-    echo -e "$CAT - Since we attempted to setup an GPU the script will now end and you should reboot.
+echo -e "$CNT - Script had completed!
     Please type 'reboot' at the prompt and hit Enter when ready."
-    exit
-fi
-
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to start Hyprland now? (y,n) ' HYP
-if [[ $HYP == "Y" || $HYP == "y" ]]; then
-    exec sudo systemctl start sddm &>> $INSTLOG
-else
-    exit
-fi
+exit
