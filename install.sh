@@ -172,7 +172,7 @@ show_progress $!
 echo -e "\e[1A\e[K$COK - pacman updated."
 
 #### Update applications ####
-echo -en "$CNT - Updating applications."
+echo -en "$CNT - Upgrading applications."
 sudo pacman -Suy &>> $INSTLOG &
 show_progress $!
 echo -e "\e[1A\e[K$COK - applications updated."
@@ -238,10 +238,10 @@ for SOFTWR in ${main_stage[@]}; do
 done
 
 echo -en "$CNT - Instaling icon theme."
-git clone https://github.com/vinceliuice/Tela-icon-theme.git &>> $INSTLOG
-cd Tela-icon-theme
-./install.sh &>> ../$INSTLOG &
+git clone https://github.com/vinceliuice/Tela-icon-theme.git &>> $INSTLOG &
 show_progress $!
+cd Tela-icon-theme
+./install.sh &>> ../$INSTLOG
 if [ -d "$HOME/.local/share/icons/Tela" ]; then
     echo -e "\e[1A\e[K$COK - icon theme configured"
 else
