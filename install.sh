@@ -22,37 +22,15 @@ prep_stage=(
     polkit-gnome
     python-requests
     pacman-contrib
-    linux-headers
-)
-
-#software for intel GPU only
-intel_stage=(
-    xf86-video-intel
-    mesa
-    lib32-mesa
-    lib32-vulkan-intel
-    vulkan-intel
 )
 
 #software for nvidia GPU only
 nvidia_stage=(
+    linux-headers
     nvidia-dkms
     nvidia-settings
     libva
     libva-nvidia-driver-git
-)
-
-#software for amd GPU only
-amd_stage=(
-    xf86-video-amdgpu
-    mesa
-    lib32-mesa
-    vulkan-radeon
-    lib32-vulkan-radeon
-    libva-mesa-driver
-    lib32-libva-mesa-driver
-    mesa-vdpau
-    lib32-mesa-vdpau
 )
 
 #the main packages
@@ -174,24 +152,18 @@ else
     exit
 fi
 
-echo $'[\e[1;33mACTION\e[0m] - Would you like to install GPU drivers? (leave blank if you dont)
-    1) Intel
-    2) Nvidia
-    3) AMD'
-
-ISINTEL=false
-ISNVIDIA=false
-ISAMD=false
-
-read GRAPHICSCARD
-case $GRAPHICSCARD in
-1)
-    ISINTEL=true;;
-2)
-    ISNVIDIA=true;;
-3)
-    ISAMD=true;;
-esac
+# find the Nvidia GPU
+if lspci -k | grep -A 2 -E "(VGA|3D)" | grep -iq nvidia; then
+    # give the user an option to not install NVIDIA GPU driver
+    read -rep $'[\e[1;33mACTION\e[0m] - Would you like to install NVIDIA GPU driver? (y,n) ' INSTNVIDIA
+    if [[ $INSTNVIDIA == "Y" || $INSTNVIDIA == "y" ]]; then
+        ISNVIDIA=true
+    else
+        ISNVIDIA=false
+    fi
+else
+    ISNVIDIA=false
+fi
 
 #### Update pacman ####
 echo -en "$CNT - Updating pacman."
@@ -234,14 +206,6 @@ for SOFTWR in ${prep_stage[@]}; do
     install_software $SOFTWR
 done
 
-# Setup Intel if it was found
-if [[ "$ISINTEL" == true ]]; then
-    echo -e "$CNT - Intel GPU support setup stage, this may take a while..."
-    for SOFTWR in ${intel_stage[@]}; do
-        install_software $SOFTWR
-    done
-fi
-
 # Setup Nvidia if it was found
 if [[ "$ISNVIDIA" == true ]]; then
     echo -e "$CNT - Nvidia GPU support setup stage, this may take a while..."
@@ -253,14 +217,6 @@ if [[ "$ISNVIDIA" == true ]]; then
     sudo sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
     sudo mkinitcpio --config /etc/mkinitcpio.conf --generate /boot/initramfs-custom.img
     echo -e "options nvidia-drm modeset=1" | sudo tee -a /etc/modprobe.d/nvidia.conf &>> $INSTLOG
-fi
-
-# Setup AMD if it was found
-if [[ "$ISAMD" == true ]]; then
-    echo -e "$CNT - AMD GPU support setup stage, this may take a while..."
-    for SOFTWR in ${amd_stage[@]}; do
-        install_software $SOFTWR
-    done
 fi
 
 # Install the correct hyprland version
@@ -406,23 +362,28 @@ if [ -x "$(command -v keyd)" ]; then
 fi
 
 ### Install the starship shell ###
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to activate the starship shell? (y,n) ' STAR
-if [[ $STAR == "Y" || $STAR == "y" ]]; then
-    # install the starship shell
-    echo -e "$CNT - Hansen Crusher, Engage!"
-    echo -e "$CNT - Updating .bashrc..."
-    echo -e '\neval "$(starship init bash)"' >> ~/.bashrc
-    echo -e "$CNT - copying starship config file to ~/.config ..."
-    cp configs/starship.toml ~/.config/
-fi
+echo -e '\neval "$(starship init bash)"' >> ~/.bashrc
+echo -e "$CNT - copying starship config file to ~/.config ..."
+cp configs/starship.toml ~/.config/
 
 ### copy .bachrc ###
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file? (not recommended if you have changed the personal package list a lot) (y,n) ' BASHRC
+read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file?
+(not recommended if you have changed the personal package list a lot) (y,n) ' BASHRC
 if [[ $BACHRC == "Y" || $BASHRC == "y" ]]; then
     cp -f configs/.bashrc ~/.bashrc
 fi
 
 ### Script is done ###
-echo -e "$CNT - Script had completed!
+echo -e "$CNT - Script had completed!"
+if [[ "$ISNVIDIA" == true ]]; then
+    echo -e "$CAT - Since we attempted to setup an Nvidia GPU the script will now end and you should reboot.
     Please type 'reboot' at the prompt and hit Enter when ready."
-exit
+    exit
+fi
+
+read -rep $'[\e[1;33mACTION\e[0m] - Would you like to start Hyprland now? (y,n) ' HYP
+if [[ $HYP == "Y" || $HYP == "y" ]]; then
+    exec sudo systemctl start sddm &>> $INSTLOG
+else
+    exit
+fi
