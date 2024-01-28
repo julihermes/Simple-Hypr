@@ -249,7 +249,6 @@ else
 fi
 cd ..
 
-
 # Start the bluetooth service
 echo -e "$CNT - Starting the Bluetooth Service..."
 sudo systemctl enable --now bluetooth.service &>> $INSTLOG
@@ -303,6 +302,7 @@ if [[ "$ISNVIDIA" == true ]]; then
     echo -e "\nsource = ~/.config/hypr/configs/env_nvidia.conf" >> ~/.config/hypr/configs/env.conf
 fi
 
+# Setup manual fonts
 FONTDIR=~/.local/share/fonts
 if [ -d "$FONTDIR" ]; then
     echo -e "$COK - $FONTDIR found"
@@ -313,6 +313,7 @@ fi
 cp -r configs/rofi/powermenu/fonts/* $FONTDIR
 fc-cache
 
+#coping .desktops files to hide some unused applications
 APPSDIR=~/.local/share/applications
 if [ -d "$APPSDIR" ]; then
     echo -e "$COK - $APPSDIR found"
@@ -322,7 +323,7 @@ else
 fi
 cp -r configs/desktops/* $APPSDIR
 
-
+# Setup "Set as background" nemo action
 NEMOACDIR=~/.local/share/nemo/actions
 if [ -d "$NEMOACDIR" ]; then
     echo -e "$COK - $NEMOACDIR found"
@@ -331,6 +332,7 @@ else
     mkdir -p $NEMOACDIR
 fi
 cp configs/set_as_background.nemo_action $NEMOACDIR/
+sleep 2
 
 # Copy the SDDM theme
 echo -e "$CNT - Setting up the login screen."
