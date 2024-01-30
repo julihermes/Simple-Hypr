@@ -24,7 +24,7 @@ prep_stage=(
     pacman-contrib
 )
 
-#software for nvidia GPU only
+# Software for nvidia GPU only
 nvidia_stage=(
     linux-headers
     nvidia-dkms
@@ -33,7 +33,7 @@ nvidia_stage=(
     libva-nvidia-driver-git
 )
 
-#the main packages
+# The main packages
 main_stage=(
     xdg-desktop-portal-hyprland
     kitty
@@ -69,7 +69,7 @@ main_stage=(
     firefox
 )
 
-#personal packages
+# Personal packages
 personal_stage=(
     keyd
     neovim
@@ -85,7 +85,7 @@ personal_stage=(
     google-chrome
 )
 
-# set some colors
+# Set some colors
 CNT="[\e[1;36mNOTE\e[0m]"
 COK="[\e[1;32mOK\e[0m]"
 CER="[\e[1;31mERROR\e[0m]"
@@ -94,7 +94,7 @@ CWR="[\e[1;35mWARNING\e[0m]"
 CAC="[\e[1;33mACTION\e[0m]"
 INSTLOG="install.log"
 
-# function that would show a progress bar to the user
+# Function that would show a progress bar to the user
 show_progress() {
     while ps | grep $1 &> /dev/null;
     do
@@ -105,34 +105,34 @@ show_progress() {
     sleep 2
 }
 
-# function that will test for a package and if not found it will attempt to install it
+# Function that will test for a package and if not found it will attempt to install it
 install_software() {
     # First lets see if the package is there
     if yay -Q $1 &>> /dev/null ; then
         echo -e "$COK - $1 is already installed."
     else
-        # no package found so installing
+        # No package found so installing
         echo -en "$CNT - Now installing $1 ."
         yay -S --noconfirm $1 &>> $INSTLOG &
         show_progress $!
-        # test to make sure package installed
+        # Test to make sure package installed
         if yay -Q $1 &>> /dev/null ; then
             echo -e "\e[1A\e[K$COK - $1 was installed."
         else
-            # if this is hit then a package is missing, exit to review log
+            # If this is hit then a package is missing, exit to review log
             echo -e "\e[1A\e[K$CER - $1 install had failed, please check the install.log"
             exit
         fi
     fi
 }
 
-# set some expectations for the user
+# Set some expectations for the user
 echo -e "$CNT - You are about to execute a script that would attempt to setup Hyprland.
 This script was designed for a fresh minimal installation of Arch Linux with git installed,
 if your scenario is different from this, make sure you know what you are doing."
 sleep 1
 
-# attempt to discover if this is a VM or not
+# Attempt to discover if this is a VM or not
 echo -e "$CNT - Checking for Physical or VM..."
 ISVM=$(hostnamectl | grep Chassis)
 echo -e "Using $ISVM"
@@ -142,7 +142,7 @@ if [[ $ISVM == *"vm"* ]]; then
     sleep 1
 fi
 
-# give the user an option to exit out
+# Give the user an option to exit out
 read -rep $'[\e[1;33mACTION\e[0m] - Would you like to continue with the install (y,n) ' CONTINST
 if [[ $CONTINST == "Y" || $CONTINST == "y" ]]; then
     echo -e "$CNT - Setup starting..."
@@ -152,9 +152,9 @@ else
     exit
 fi
 
-# find the Nvidia GPU
+# Find the Nvidia GPU
 if lspci -k | grep -A 2 -E "(VGA|3D)" | grep -iq nvidia; then
-    # give the user an option to not install NVIDIA GPU driver
+    # Give the user an option to not install NVIDIA GPU driver
     read -rep $'[\e[1;33mACTION\e[0m] - Would you like to install NVIDIA GPU driver? (y,n) ' INSTNVIDIA
     if [[ $INSTNVIDIA == "Y" || $INSTNVIDIA == "y" ]]; then
         ISNVIDIA=true
@@ -165,19 +165,19 @@ else
     ISNVIDIA=false
 fi
 
-#### Update pacman ####
+# Update pacman
 echo -en "$CNT - Updating pacman."
 sudo pacman -Syy &>> $INSTLOG &
 show_progress $!
 echo -e "\e[1A\e[K$COK - pacman updated."
 
-#### Update applications ####
+# Update applications
 echo -en "$CNT - Upgrading applications."
 sudo pacman -Suy &>> $INSTLOG &
 show_progress $!
 echo -e "\e[1A\e[K$COK - applications updated."
 
-#### Check for package manager ####
+# Check for package manager
 if [ ! -f /sbin/yay ]; then
     echo -en "$CNT - Configuring yay."
     git clone https://aur.archlinux.org/yay.git &>> $INSTLOG
@@ -188,13 +188,13 @@ if [ ! -f /sbin/yay ]; then
         echo -e "\e[1A\e[K$COK - yay configured"
         cd ..
 
-        # update the yay database
+        # Update the yay database
         echo -en "$CNT - Updating yay."
         yay -Suy --noconfirm &>> $INSTLOG &
         show_progress $!
         echo -e "\e[1A\e[K$COK - yay updated."
     else
-        # if this is hit then a package is missing, exit to review log
+        # If this is hit then a package is missing, exit to review log
         echo -e "\e[1A\e[K$CER - yay install failed, please check the install.log"
         exit
     fi
@@ -213,7 +213,7 @@ if [[ "$ISNVIDIA" == true ]]; then
         install_software $SOFTWR
     done
 
-    # update config
+    # Update config
     sudo sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
     sudo mkinitcpio --config /etc/mkinitcpio.conf --generate /boot/initramfs-custom.img
     echo -e "options nvidia-drm modeset=1" | sudo tee -a /etc/modprobe.d/nvidia.conf &>> $INSTLOG
@@ -231,7 +231,7 @@ else
     install_software hyprland
 fi
 
-# main components
+# Main components
 echo -e "$CNT - Installing main components, this may take a while..."
 for SOFTWR in ${main_stage[@]}; do
     install_software $SOFTWR
@@ -263,10 +263,10 @@ sleep 2
 echo -e "$CNT - Cleaning out conflicting xdg portals..."
 yay -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
 
-### ask if want to install personal pacakges ####
+# Ask if want to install personal pacakges
 read -rep $'[\e[1;33mACTION\e[0m] - Would you like to install the personal packages? (y,n) ' INST
 if [[ $INST == "Y" || $INST == "y" ]]; then
-    # personal components
+    # Personal components
     echo -e "$CNT - Installing main components, this may take a while..."
     for SOFTWR in ${personal_stage[@]}; do
         install_software $SOFTWR
@@ -274,7 +274,7 @@ if [[ $INST == "Y" || $INST == "y" ]]; then
 fi
 
 # Setup each appliaction
-# check for existing config folders and backup
+# Check for existing config folders and backup
 for DIR in hypr btop kitty rofi swaylock swaync waybar
 do
     DIRPATH=~/.config/$DIR
@@ -284,7 +284,7 @@ do
         echo -e "$COK - Backed up $DIR to $DIRPATH-back."
     fi
 
-    # make new empty folders
+    # Make new empty folders
     mkdir -p $DIRPATH &>> $INSTLOG
 done
 
@@ -297,7 +297,7 @@ cp -r configs/swaylock/* ~/.config/swaylock/
 cp -r configs/swaync/* ~/.config/swaync/
 cp -r configs/waybar/* ~/.config/waybar/
 
-# add the Nvidia env file to the config (if needed)
+# Add the Nvidia env file to the config (if needed)
 if [[ "$ISNVIDIA" == true ]]; then
     echo -e "\nsource = ~/.config/hypr/configs/env_nvidia.conf" >> ~/.config/hypr/configs/env.conf
 fi
@@ -313,7 +313,7 @@ fi
 cp -r configs/rofi/powermenu/fonts/* $FONTDIR
 fc-cache
 
-#coping .desktops files to hide some unused applications
+# Coping .desktops files to hide some unused applications
 APPSDIR=~/.local/share/applications
 if [ -d "$APPSDIR" ]; then
     echo -e "$COK - $APPSDIR found"
@@ -347,35 +347,36 @@ else
     echo -e "$CWR - $WLDIR NOT found, creating..."
     sudo mkdir $WLDIR
 fi
-# stage the .desktop file
+# Stage the .desktop file
 sudo mv ~/.local/share/applications/hyprland.desktop /usr/share/wayland-sessions/
 
-# setup the first look and feel preferences
+# Setup the first look and feel preferences
 gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
 gsettings set org.gnome.desktop.interface gtk-theme "Arc-Dark"
 gsettings set org.gnome.desktop.interface icon-theme "Tela"
 gsettings set org.nemo.desktop show-desktop-icons false
 gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
-
 cp configs/user-dirs.dirs ~/.config/user-dirs.dirs
 
-if [ -x "$(command -v keyd)" ]; then
-    sudo cp configs/keyd.config /etc/keyd/default.conf
-fi
-
-### Install the starship shell ###
+# Install the starship shell
 echo -e '\neval "$(starship init bash)"' >> ~/.bashrc
 echo -e "$CNT - copying starship config file to ~/.config ..."
 cp configs/starship.toml ~/.config/
 
-### copy .bachrc ###
+# Copy .bachrc
 read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file?
 (not recommended if you have changed the personal package list a lot) (y,n) ' BASHRC
 if [[ $BACHRC == "Y" || $BASHRC == "y" ]]; then
     cp -f configs/.bashrc ~/.bashrc
 fi
 
-### Script is done ###
+# Enable and congif keyd if installed
+if [ -x "$(command -v keyd)" ]; then
+    sudo cp configs/keyd.config /etc/keyd/default.conf
+    sudo systemctl enable keyd
+fi
+
+# Script is done
 echo -e "$CNT - Script had completed!"
 if [[ "$ISNVIDIA" == true ]]; then
     echo -e "$CAT - Since we attempted to setup an Nvidia GPU the script will now end and you should reboot.
