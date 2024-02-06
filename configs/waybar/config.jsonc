@@ -10,6 +10,7 @@
         "hyprland/window"
     ],
     "modules-right": [
+        "custom/recorder",
         "tray",
         "battery",
         "backlight",
@@ -77,6 +78,15 @@
 
     "hyprland/window": {
         "format": "{}"
+    },
+
+    "custom/recorder": {
+        "format": "{}",
+        "return-type": "json",
+        "interval": 2,
+        "exec": "echo '{\"text\": \"\", \"tooltip\": \"Recording screen. (click to stop)\", \"class\": \"recording\"}'",
+        "exec-if": "pgrep wf-recorder",
+        "on-click": "~/.config/waybar/scripts/recorder stop"
     },
 
     "tray": {

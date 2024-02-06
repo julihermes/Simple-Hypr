@@ -45,6 +45,7 @@ main_stage=(
     swappy
     grim
     slurp
+    wf-recorder
     pamixer
     pavucontrol
     brightnessctl
