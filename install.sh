@@ -68,22 +68,11 @@ main_stage=(
     bash-completion
     neofetch
     firefox
-)
-
-# Personal packages
-personal_stage=(
-    keyd
-    neovim
-    lsd
-    lazygit
     gnome-calculator
     evince
     image-roll
     totem
     gst-libav
-    gnome-disk-utility
-    enpass-bin
-    google-chrome
 )
 
 # Set some colors
@@ -264,16 +253,6 @@ sleep 2
 echo -e "$CNT - Cleaning out conflicting xdg portals..."
 yay -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
 
-# Ask if want to install personal pacakges
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to install the personal packages? (y,n) ' INST
-if [[ $INST == "Y" || $INST == "y" ]]; then
-    # Personal components
-    echo -e "$CNT - Installing main components, this may take a while..."
-    for SOFTWR in ${personal_stage[@]}; do
-        install_software $SOFTWR
-    done
-fi
-
 # Setup each appliaction
 # Check for existing config folders and backup
 for DIR in hypr btop kitty rofi swaylock swaync waybar
@@ -364,21 +343,9 @@ echo -e '\neval "$(starship init bash)"' >> ~/.bashrc
 echo -e "$CNT - copying starship config file to ~/.config ..."
 cp configs/starship.toml ~/.config/
 
-# Copy .bachrc
-read -rep $'[\e[1;33mACTION\e[0m] - Would you like to copy .bachrc file?
-(not recommended if you have changed the personal package list a lot) (y,n) ' BASHRC
-if [[ $BACHRC == "Y" || $BASHRC == "y" ]]; then
-    cp -f configs/.bashrc ~/.bashrc
-fi
-
-# Enable and congif keyd if installed
-if [ -x "$(command -v keyd)" ]; then
-    sudo cp configs/keyd.config /etc/keyd/default.conf
-    sudo systemctl enable keyd
-fi
-
 # Script is done
-echo -e "$CNT - Script had completed!"
+echo -e "$CNT - Script had completed!
+(you can safely delete the Simple-Hypr folder)"
 if [[ "$ISNVIDIA" == true ]]; then
     echo -e "$CAT - Since we attempted to setup an Nvidia GPU the script will now end and you should reboot.
     Please type 'reboot' at the prompt and hit Enter when ready."
