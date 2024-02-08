@@ -12,8 +12,8 @@ notify_user() {
 }
 
 create_video_dir() {
-    if ! [ -d "~/Videos" ]; then
-        mkdir -p ~/Videos
+    if ! [ -d "$(xdg-user-dir VIDEOS)" ]; then
+        mkdir -p $(xdg-user-dir VIDEOS)
     fi
 }
 
