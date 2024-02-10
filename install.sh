@@ -23,6 +23,7 @@ prep_stage=(
     polkit-gnome
     python-requests
     pacman-contrib
+    xdg-user-dirs
 )
 
 # Software for nvidia GPU only
@@ -256,7 +257,7 @@ yay -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
 
 # Setup each appliaction
 # Check for existing config folders and backup
-for DIR in hypr btop kitty rofi swaylock swaync waybar
+for DIR in hypr btop kitty rofi swaylock swaync waybar swappy
 do
     DIRPATH=~/.config/$DIR
     if [ -d "$DIRPATH" ]; then
@@ -277,6 +278,7 @@ cp -r configs/rofi/* ~/.config/rofi/
 cp -r configs/swaylock/* ~/.config/swaylock/
 cp -r configs/swaync/* ~/.config/swaync/
 cp -r configs/waybar/* ~/.config/waybar/
+cp -r configs/swappy/* ~/.config/swappy/
 
 # Add the Nvidia env file to the config (if needed)
 if [[ "$ISNVIDIA" == true ]]; then
