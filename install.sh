@@ -229,13 +229,13 @@ for SOFTWR in ${main_stage[@]}; do
     install_software $SOFTWR
 done
 
-echo -en "$CNT - Instaling icon theme."
+echo -en "$CNT - Instaling Tela icon theme."
 git clone https://github.com/vinceliuice/Tela-icon-theme.git &>> $INSTLOG &
 show_progress $!
 cd Tela-icon-theme
 ./install.sh &>> ../$INSTLOG
 if [ -d "$HOME/.local/share/icons/Tela" ]; then
-    echo -e "\e[1A\e[K$COK - icon theme configured"
+    echo -e "\e[1A\e[K$COK - Tela icon theme configured"
 else
     echo -e "\e[1A\e[K$CER - icon theme install failed, please check the install.log"
 fi
