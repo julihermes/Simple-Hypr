@@ -38,6 +38,7 @@ nvidia_stage=(
 # The main packages
 main_stage=(
     xdg-desktop-portal-hyprland
+    zsh
     kitty
     waybar
     swaybg
@@ -257,7 +258,7 @@ yay -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
 
 # Setup each appliaction
 # Check for existing config folders and backup
-for DIR in hypr btop kitty rofi swaylock swaync waybar swappy
+for DIR in hypr btop kitty rofi swaylock swaync waybar swappy 
 do
     DIRPATH=~/.config/$DIR
     if [ -d "$DIRPATH" ]; then
@@ -341,10 +342,17 @@ gsettings set org.nemo.desktop show-desktop-icons false
 gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
 cp configs/user-dirs.dirs ~/.config/user-dirs.dirs
 
-# Install the starship shell
-echo -e '\neval "$(starship init bash)"' >> ~/.bashrc
+# Setup starship shell
 echo -e "$CNT - copying starship config file to ~/.config ..."
 cp configs/starship.toml ~/.config/
+
+# Setup ZSH
+echo -e "$CNT - Setting up ZSH (will prompt your password) ..."
+cp configs/.zshenv ~/.zshenv
+zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1
+cp -r configs/zsh/* ~/.config/zsh/
+zsh &>> $INSTLOG
+chsh -s $(which zsh)
 
 # Script is done
 echo -e "$CNT - Script had completed!
