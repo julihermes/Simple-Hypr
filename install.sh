@@ -258,7 +258,7 @@ yay -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
 
 # Setup each appliaction
 # Check for existing config folders and backup
-for DIR in hypr btop kitty rofi swaylock swaync waybar swappy 
+for DIR in hypr btop kitty rofi swaylock swaync waybar swappy zsh
 do
     DIRPATH=~/.config/$DIR
     if [ -d "$DIRPATH" ]; then
@@ -349,9 +349,9 @@ cp configs/starship.toml ~/.config/
 # Setup ZSH
 echo -e "$CNT - Setting up ZSH (will prompt your password) ..."
 cp configs/.zshenv ~/.zshenv
-zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1
-cp -r configs/zsh/* ~/.config/zsh/
-zsh &>> $INSTLOG
+zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 &>> $INSTLOG &
+cp -rf configs/zsh/* ~/.config/zsh/
+zsh &>> $INSTLOG &
 chsh -s $(which zsh)
 
 # Script is done
