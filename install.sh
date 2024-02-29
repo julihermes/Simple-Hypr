@@ -271,15 +271,15 @@ do
 done
 
 echo -e "$CNT - Copying config files..."
-cp -r configs/hypr/* ~/.config/hypr/
-cp -r configs/btop/* ~/.config/btop/
-cp -r configs/kitty/* ~/.config/kitty/
-cp -r configs/rofi/* ~/.config/rofi/
-cp -r configs/swaylock/* ~/.config/swaylock/
-cp -r configs/swaync/* ~/.config/swaync/
-cp -r configs/waybar/* ~/.config/waybar/
-cp -r configs/swappy/* ~/.config/swappy/
-cp -r configs/zsh/* ~/.config/zsh/
+cp -ra configs/hypr/. ~/.config/hypr/
+cp -ra configs/btop/. ~/.config/btop/
+cp -ra configs/kitty/. ~/.config/kitty/
+cp -ra configs/rofi/. ~/.config/rofi/
+cp -ra configs/swaylock/. ~/.config/swaylock/
+cp -ra configs/swaync/. ~/.config/swaync/
+cp -ra configs/waybar/. ~/.config/waybar/
+cp -ra configs/swappy/. ~/.config/swappy/
+cp -ra configs/zsh/. ~/.config/zsh/
 
 # Add the Nvidia env file to the config (if needed)
 if [[ "$ISNVIDIA" == true ]]; then
