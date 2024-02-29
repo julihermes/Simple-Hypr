@@ -280,6 +280,7 @@ cp -r configs/swaylock/* ~/.config/swaylock/
 cp -r configs/swaync/* ~/.config/swaync/
 cp -r configs/waybar/* ~/.config/waybar/
 cp -r configs/swappy/* ~/.config/swappy/
+cp -r configs/zsh/* ~/.config/zsh/
 
 # Add the Nvidia env file to the config (if needed)
 if [[ "$ISNVIDIA" == true ]]; then
@@ -349,9 +350,8 @@ cp configs/starship.toml ~/.config/
 # Setup ZSH
 echo -e "$CNT - Setting up ZSH (will prompt your password) ..."
 cp configs/.zshenv ~/.zshenv
-zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 &>> $INSTLOG &
-cp -rf configs/zsh/* ~/.config/zsh/
-zsh &>> $INSTLOG &
+zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 --keep &>> $INSTLOG &
+show_progress $!
 chsh -s $(which zsh)
 
 # Script is done
