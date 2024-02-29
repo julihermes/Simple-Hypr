@@ -68,7 +68,6 @@ main_stage=(
     starship
     python-pywal
     sddm
-    bash-completion
     neofetch
     firefox
     gnome-calculator
