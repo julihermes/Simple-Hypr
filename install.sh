@@ -39,12 +39,12 @@ nvidia_stage=(
 main_stage=(
     xdg-desktop-portal-hyprland
     zsh
-    kitty
+    alacritty
     waybar
     swaybg
     swaync
     swaylock-effects
-    rofi
+    rofi-lbonn-wayland
     swappy
     grim
     slurp
@@ -257,7 +257,7 @@ yay -R --noconfirm xdg-desktop-portal-gnome xdg-desktop-portal-gtk &>> $INSTLOG
 
 # Setup each appliaction
 # Check for existing config folders and backup
-for DIR in hypr btop kitty rofi swaylock swaync waybar swappy zsh
+for DIR in hypr btop alacritty rofi swaylock swaync waybar swappy zsh
 do
     DIRPATH=~/.config/$DIR
     if [ -d "$DIRPATH" ]; then
@@ -273,7 +273,7 @@ done
 echo -e "$CNT - Copying config files..."
 cp -ra configs/hypr/. ~/.config/hypr/
 cp -ra configs/btop/. ~/.config/btop/
-cp -ra configs/kitty/. ~/.config/kitty/
+cp -ra configs/alacritty/. ~/.config/alacritty/
 cp -ra configs/rofi/. ~/.config/rofi/
 cp -ra configs/swaylock/. ~/.config/swaylock/
 cp -ra configs/swaync/. ~/.config/swaync/
@@ -339,7 +339,7 @@ gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
 gsettings set org.gnome.desktop.interface gtk-theme "Arc-Dark"
 gsettings set org.gnome.desktop.interface icon-theme "Tela"
 gsettings set org.nemo.desktop show-desktop-icons false
-gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
+gsettings set org.cinnamon.desktop.default-applications.terminal exec alacritty
 cp configs/user-dirs.dirs ~/.config/user-dirs.dirs
 
 # Setup starship shell
