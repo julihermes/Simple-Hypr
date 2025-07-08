@@ -25,7 +25,7 @@ nvidia_stage=(
 pkgs=(
     pacman-contrib
     greetd
-    greetd-tuigreet-bin
+    greetd-tuigreet
     uwsm
     libnewt
     xdg-desktop-portal-hyprland
@@ -164,10 +164,10 @@ echo -e "\e[1A\e[K$COK - pacman and packages updated."
 
 # Check for AUR manager
 if [ ! -f /sbin/paru ]; then
-    echo -en "$CNT - Configuring Paru."
+    echo -en "$CNT - Configuring Paru, this may take a while and request your password..."
     git clone https://aur.archlinux.org/paru.git &>>$INSTLOG
     cd paru
-    makepkg -si --noconfirm &>>../$INSTLOG &
+    makepkg -si --noconfirm &>>$INSTLOG &
     show_progress $!
     if [ -f /sbin/paru ]; then
         echo -e "\e[1A\e[K$COK - paru configured"
