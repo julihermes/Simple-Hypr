@@ -7,6 +7,10 @@ plug "zap-zsh/completions"
 plug "zsh-users/zsh-syntax-highlighting"
 plug "zsh-users/zsh-autosuggestions"
 plug "zsh-users/zsh-history-substring-search"
+plug "zap-zsh/fzf"
+plug "Aloxaf/fzf-tab"
+plug "Freed-Wu/fzf-tab-source"
+plug "wintermi/zsh-lsd"
 
 plug "$HOME/.config/zsh/configs.zsh"
 plug "$HOME/.config/zsh/aliases.zsh"
@@ -14,4 +18,3 @@ plug "$HOME/.config/zsh/aliases.zsh"
 # Load and initialise completion system
 autoload -Uz compinit
 compinit
-
