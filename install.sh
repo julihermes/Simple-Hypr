@@ -63,6 +63,7 @@ pkgs=(
     gradia
     python-cairo
     fastfetch
+    xcur2png
 
 
     # wf-recorder
@@ -89,8 +90,12 @@ INSTLOG="install.log"
 show_progress() {
     while ps | grep $1 &> /dev/null;
     do
+        echo -en "."
+        sleep 1
         echo -n "."
-        sleep 2
+        sleep 1
+        echo -n "."
+        sleep 1
     done
     echo -en "Done!\n"
     sleep 2
@@ -162,9 +167,12 @@ sudo pacman -Syu --noconfirm &>>$INSTLOG &
 show_progress $!
 echo -e "\e[1A\e[K$COK - pacman and packages updated."
 
+echo -en "$CNT - Getting started (you will be asked for your password a few times during the process)."
+sleep 2
+
 # Check for AUR manager
 if [ ! -f /sbin/paru ]; then
-    echo -en "$CNT - Configuring Paru, this may take a while and request your password..."
+    echo -en "$CNT - Configuring Paru..."
     git clone https://aur.archlinux.org/paru.git &>>$INSTLOG
     cd paru
     makepkg -si --noconfirm &>>$INSTLOG &
@@ -245,10 +253,10 @@ fi
 cp -r configs/desktops/* $APPSDIR &>> $INSTLOG
 
 # Coping greetd config
-cp configs/greetd.toml /etc/greetd/config.toml &>> $INSTLOG
+sudo cp configs/greetd.toml /etc/greetd/config.toml &>> $INSTLOG
 
 # Coping polkit gnome service file
-cp configs/polkit-gnome.service /usr/lib/systemd/user/ &>> $INSTLOG
+sudo cp configs/polkit-gnome.service /usr/lib/systemd/user/ &>> $INSTLOG
 
 # Coping starship config
 cp configs/starship.toml ~/.config/ &>> $INSTLOG
@@ -259,11 +267,8 @@ cp configs/.lessfilter ~/ &>> $INSTLOG
 # Coping wallpaper
 cp configs/wallpaper.jpg ~/Pictures/ &>> $INSTLOG
 
-# Remove not uwsm wayland session
-sudo rm /usr/share/wayland-sessions/hyprland.desktop &>> $INSTLOG
-
 # Setup ZSH
-echo -e "$CNT - Setting up ZSH (will prompt your password) ..."
+echo -e "$CNT - Setting up ZSH..."
 cp configs/.zshenv ~/.zshenv &>> $INSTLOG
 zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 --keep &>> $INSTLOG &
 show_progress $!
