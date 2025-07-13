@@ -27,7 +27,6 @@ pkgs=(
     greetd
     greetd-tuigreet
     uwsm
-    libnewt
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
     polkit-gnome
@@ -92,14 +91,6 @@ LOG_FILE="install-$(date +%Y%m%d-%H%M%S).log"
 SPINNER_CHARS="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
 SPINNER_PID=""
 
-# Function to setup logging
-setup_logging() {
-    echo "=====================================" | tee "$LOG_FILE"
-    echo "Started: $(date)" | tee -a "$LOG_FILE"
-    echo "=====================================" | tee -a "$LOG_FILE"
-    echo "" | tee -a "$LOG_FILE"
-}
-
 # Function to log messages
 log_message() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
@@ -162,11 +153,19 @@ else
     ISNVIDIA=false
 fi
 
+# Function to setup logging
+setup_logging() {
+    echo "=====================================" | tee "$LOG_FILE"
+    echo "Started: $(date)" | tee -a "$LOG_FILE"
+    echo "=====================================" | tee -a "$LOG_FILE"
+    echo "" | tee -a "$LOG_FILE"
+}
+
 # Function to update system before installation
 update_system() {
     start_spinner "Updating system packages..."
 
-    if paru -Syu --noconfirm >> "$LOG_FILE" 2>&1; then
+    if sudo pacman -Syu --noconfirm &>> $LOG_FILE; then
         stop_spinner
         print_success "System updated successfully"
     else
@@ -187,12 +186,6 @@ install_paru() {
             stop_spinner
             print_success "Paru installed successfully."
             cd ..
-
-            # Update the Paru database
-            start_spinner "Updating Paru..."
-            paru -Syy --noconfirm &>>$LOG_FILE
-            stop_spinner
-            print_success "Paru updated."
         else
             # If this is hit then a package is missing, exit to review log
             print_error "paru install failed, please check the install.log."
@@ -271,6 +264,15 @@ copy_configs() {
     fi
     cp -r configs/desktops/* $APPSDIR &>> $LOG_FILE
 
+    # Creating home directories
+    mkdir ~/Downloads
+    mkdir ~/Templates
+    mkdir ~/Public
+    mkdir ~/Documents
+    mkdir ~/Music
+    mkdir ~/Pictures
+    mkdir ~/Videos
+
     # Coping greetd config
     sudo cp -f configs/greetd.toml /etc/greetd/config.toml &>> $LOG_FILE
 
@@ -287,9 +289,6 @@ copy_configs() {
     cp configs/.lessfilter ~/ &>> $LOG_FILE
 
     # Coping wallpaper
-    if ! [ -d "~/Pictures" ]; then
-        mkdir -p ~/Pictures &>> $LOG_FILE
-    fi
     cp configs/wallpaper.jpg ~/Pictures/ &>> $LOG_FILE
 
     stop_spinner
